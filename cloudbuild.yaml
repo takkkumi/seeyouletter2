@@ -1,0 +1,30 @@
+{
+    "steps":
+        [
+            {
+                "name": "gcr.io/cloud-builders/docker",
+                "args":
+                    ["build", "-t", "gcr.io/seeyouletter-bb4d8/helloworld", "."],
+            },
+            {
+                "name": "gcr.io/cloud-builders/docker",
+                "args": ["push", "gcr.io/seeyouletter-bb4d8/helloworld"],
+            },
+            {
+                "name": "gcr.io/cloud-builders/gcloud",
+                "args":
+                    [
+                        "run",
+                        "deploy",
+                        "HelloNewWorld",
+                        "--image",
+                        "gcr.io/seeyouletter-bb4d8/helloworld",
+                        "--region",
+                        "asia-northeast1",
+                        "--platform",
+                        "managed",
+                        "--allow-unauthenticated",
+                    ],
+            },
+        ],
+}

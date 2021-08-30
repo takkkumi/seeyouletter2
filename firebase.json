@@ -32,5 +32,20 @@
   },
   "remoteconfig": {
     "template": "remoteconfig.template.json"
+  },
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [ {
+      "source": "/helloworld",
+      "run": {
+        "serviceId": "seeyouletter-bb4d8",  
+        "region": "asia-northeast1"    
+      }
+    } ]
   }
 }
