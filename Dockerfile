@@ -6,7 +6,7 @@ FROM node:16.7.0
 
 COPY . /app
 WORKDIR  /app
-RUN yarn install && yarn run build
+RUN npm install && npm run build
 
 # start app
-CMD [ "yarn", "run", "start" ]
+CMD [ "npm", "run", "start" ]

@@ -16,7 +16,7 @@
                     [
                         "run",
                         "deploy",
-                        "HelloNewWorld",
+                        "syl1",
                         "--image",
                         "gcr.io/seeyouletter-bb4d8/helloworld",
                         "--region",
