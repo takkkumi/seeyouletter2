@@ -24,7 +24,8 @@
       "port": 9199
     },
     "ui": {
-      "enabled": false
+      "enabled": true,
+      "port":4000
     }
   },
   "remoteconfig": {
@@ -40,7 +41,7 @@
     "rewrites": [ {
       "source": "/helloworld",
       "run": {
-        "serviceId": "seeyouletter-bb4d8",  
+        "serviceId": "seeyouletter-9f0b4",  
         "region": "asia-northeast1"    
       }
     } ]
