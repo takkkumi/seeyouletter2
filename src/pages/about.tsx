@@ -1,21 +1,21 @@
+import { idContext } from "@/context/tabContext"
 import { Box, Text } from "@chakra-ui/react"
 import { useContext } from "react"
 import BasicLayout from "../components/layout/basicLayout"
-import { idContext } from "../context/tabContext"
 
-export const HomeContent = () => {
+export const AboutContent = () => {
 	return (
-		<Box padding={15} backgroundColor="blue.100">
+		<Box padding={10} backgroundColor="blue.100">
+			{" "}
 			<Text fontSize="xl" fontStyle="initial" position="static">
-				Welcome to Next.js!!
+				About
 			</Text>
 		</Box>
 	)
 }
-const HomePage = () => {
-	const { setId } = useContext(idContext)
+const AboutPage = () => {
+	const setId = useContext(idContext).setId
 	setId(0)
 	return <BasicLayout />
 }
-
-export default HomePage
+export default AboutPage

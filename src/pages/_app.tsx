@@ -11,13 +11,14 @@ import { connectAuthEmulator, getAuth, User } from "firebase/auth"
 import { connectStorageEmulator, getStorage } from "firebase/storage"
 import { useState, useEffect } from "react"
 import UserContext from "../context/userContext"
+import { idContext } from "@/context/tabContext"
 
 export const MyApp = ({ Component, pageProps }) => {
 	const [user, setUser] = useState(null)
 	const [storeUser, setStoreUser] = useState(null)
 	const [isLogin, setIsLogin] = useState(false)
 	const [isLoading, setIsLoading] = useState(false)
-
+	const [id, setId] = useState(0)
 	useEffect(() => {
 		firebaseInit()
 		const unsbscribe = getAuth().onAuthStateChanged(async (currentUser) => {
@@ -68,14 +69,16 @@ export const MyApp = ({ Component, pageProps }) => {
 				setStoreUser,
 				setIsLoading,
 			}}>
-			<ChakraProvider resetCSS theme={theme}>
-				<ColorModeProvider
-					options={{
-						useSystemColorMode: true,
-					}}>
-					<Component {...pageProps} />
-				</ColorModeProvider>
-			</ChakraProvider>
+			<idContext.Provider value={{ id, setId }}>
+				<ChakraProvider resetCSS theme={theme}>
+					<ColorModeProvider
+						options={{
+							useSystemColorMode: true,
+						}}>
+						<Component {...pageProps} />
+					</ColorModeProvider>
+				</ChakraProvider>
+			</idContext.Provider>
 		</UserContext.Provider>
 	)
 }
