@@ -1,14 +1,9 @@
 import { ChakraProvider, ColorModeProvider } from "@chakra-ui/react"
 import { firebaseInit } from "../actions/firebase_client"
 import theme from "../theme"
-import {
-	connectFirestoreEmulator,
-	doc,
-	getDoc,
-	getFirestore,
-} from "firebase/firestore"
-import { connectAuthEmulator, getAuth, User } from "firebase/auth"
-import { connectStorageEmulator, getStorage } from "firebase/storage"
+import { doc, getDoc, getFirestore } from "firebase/firestore"
+import { getAuth, User } from "firebase/auth"
+
 import { useState, useEffect } from "react"
 import UserContext from "../context/userContext"
 import { idContext } from "@/context/tabContext"
@@ -21,6 +16,7 @@ export const MyApp = ({ Component, pageProps }) => {
 	const [id, setId] = useState(0)
 	useEffect(() => {
 		firebaseInit()
+
 		const unsbscribe = getAuth().onAuthStateChanged(async (currentUser) => {
 			if (currentUser) {
 				if (currentUser !== user) {
@@ -39,12 +35,7 @@ export const MyApp = ({ Component, pageProps }) => {
 						console.log(error)
 					}
 				}
-				const isLocal = window.location.hostname === "localhost"
-				if (isLocal) {
-					connectFirestoreEmulator(getFirestore(), "localhost", 8080)
-					connectAuthEmulator(getAuth(), "http://localhost:9099")
-					connectStorageEmulator(getStorage(), "localhost", 9199)
-				}
+
 				await getFirestoreState(currentUser)
 				setIsLogin(true)
 			} else {

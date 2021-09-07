@@ -1,5 +1,7 @@
+import { ReactJSXElement } from "@emotion/react/types/jsx-namespace"
+
 type page = {
-	children: any
+	children: ReactJSXElement
 	pathName: string
 	title: string
 	label: string

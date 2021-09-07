@@ -1,6 +1,6 @@
 import { idContext } from "@/context/tabContext"
 import { Box, Text } from "@chakra-ui/react"
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import BasicLayout from "../components/layout/basicLayout"
 
 export const AboutContent = () => {
@@ -14,8 +14,10 @@ export const AboutContent = () => {
 	)
 }
 const AboutPage = () => {
-	const setId = useContext(idContext).setId
-	setId(0)
+	const { id, setId } = useContext(idContext)
+	useEffect(() => {
+		setId(1)
+	}, [id])
 	return <BasicLayout />
 }
 export default AboutPage
