@@ -1,5 +1,5 @@
 import { Flex } from "@chakra-ui/react"
-import NavBar from "../NavBar"
+import NavBar from "@/components/navbar"
 import Head from "next/head"
 import { pages } from "@/types/tabTypes"
 import { useContext } from "react"

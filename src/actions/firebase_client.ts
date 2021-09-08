@@ -33,9 +33,8 @@ const firebaseConfig = {
 	messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGE_SENDER_ID,
 	appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 }
-const isLocal = window.location.hostname === "localhost"
 
-export const firebaseInit = async () => {
+export const firebaseInit = async (isLocal: boolean) => {
 	if (!getApps().length) {
 		initializeApp(firebaseConfig)
 

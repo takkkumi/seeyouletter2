@@ -1,3 +1,4 @@
+import PostLetter from "@/components/PostLetter"
 import UserContext from "@/context/userContext"
 import { Box, Text } from "@chakra-ui/react"
 import { useContext, useEffect } from "react"
@@ -9,9 +10,10 @@ export const HomeContent = () => {
 	const storeUser = user?.storeUser
 	const userName = user?.user?.displayName
 	return (
+		storeUser?<PostLetter/>:
 		<Box padding={15} backgroundColor="blue.100">
 			<Text fontSize="xl" fontStyle="initial" position="static">
-				{userName ? `Welcome ${userName} ` : "Welcome to Next.js!!"}
+			 "Welcome to Next.js!!"
 			</Text>
 		</Box>
 	)

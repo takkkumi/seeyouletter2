@@ -1,4 +1,4 @@
-FROM node:16.7.0
+FROM node:16.7.0-slim
 
 #WORKDIR /workspaces/see-you-letter
 
@@ -6,7 +6,9 @@ FROM node:16.7.0
 
 COPY . /app
 WORKDIR  /app
-RUN npm install && npm run build
+ENV NODE_ENV=production
+
+RUN npm install --production && npm run build
 
 # start app
 CMD [ "npm", "run", "start" ]

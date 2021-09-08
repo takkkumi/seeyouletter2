@@ -15,7 +15,11 @@ export const MyApp = ({ Component, pageProps }) => {
 	const [isLoading, setIsLoading] = useState(false)
 	const [id, setId] = useState(0)
 	useEffect(() => {
-		firebaseInit()
+		const isLocal =
+			typeof window !== "undefined"
+				? window.location.hostname === "localhost"
+				: false
+		firebaseInit(isLocal)
 
 		const unsbscribe = getAuth().onAuthStateChanged(async (currentUser) => {
 			if (currentUser) {

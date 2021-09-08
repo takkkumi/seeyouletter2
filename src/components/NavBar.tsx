@@ -45,11 +45,11 @@ const NavBar: React.FC<{ tabs: pages; id: number }> = ({ tabs, id }) => {
 	const router = useRouter()
 	const auth = useContext(UserContext)
 	const { isOpen, onOpen, onClose } = useDisclosure()
-	const {
-		handleSubmit,
-		register,
-		formState: { errors, isSubmitting },
-	} = useForm()
+	// const {
+	// 	handleSubmit,
+	// 	register,
+	// 	formState: { errors, isSubmitting },
+	// } = useForm()
 	const user = auth?.storeUser?.data ?? null
 	return (
 		<Tabs
