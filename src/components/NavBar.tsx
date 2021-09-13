@@ -1,7 +1,6 @@
 import { useRouter } from "next/router"
 import Link from "next/link"
 import {
-	Box,
 	Tab,
 	TabList,
 	TabPanel,
@@ -11,27 +10,9 @@ import {
 	MenuButton,
 	MenuList,
 	MenuItem,
-	MenuItemOption,
-	MenuGroup,
-	MenuOptionGroup,
-	MenuIcon,
-	MenuCommand,
-	MenuDivider,
 	IconButton,
 	Spacer,
-	Modal,
-	ModalOverlay,
-	ModalContent,
-	ModalHeader,
-	ModalFooter,
-	ModalBody,
-	ModalCloseButton,
 	useDisclosure,
-	Button,
-	FormErrorMessage,
-	FormLabel,
-	FormControl,
-	Input,
 } from "@chakra-ui/react"
 import { HamburgerIcon } from "@chakra-ui/icons"
 
@@ -39,17 +20,11 @@ import { pages } from "@/types/tabTypes"
 import React, { useContext } from "react"
 import UserContext from "@/context/userContext"
 import { firebaseGoogleLogin, firebaseLogout } from "@/actions/firebase_client"
-import { useForm } from "react-hook-form"
 
 const NavBar: React.FC<{ tabs: pages; id: number }> = ({ tabs, id }) => {
 	const router = useRouter()
 	const auth = useContext(UserContext)
 	const { isOpen, onOpen, onClose } = useDisclosure()
-	// const {
-	// 	handleSubmit,
-	// 	register,
-	// 	formState: { errors, isSubmitting },
-	// } = useForm()
 	const user = auth?.storeUser?.data ?? null
 	return (
 		<Tabs

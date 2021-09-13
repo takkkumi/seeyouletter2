@@ -1,22 +1,18 @@
 import { storeUserData } from "./../types/userTypes"
 import {
 	getAuth,
-	setPersistence,
-	browserLocalPersistence,
 	GoogleAuthProvider,
 	signInWithPopup,
 	getAdditionalUserInfo,
 	createUserWithEmailAndPassword,
-	User,
 	connectAuthEmulator,
-	signInWithCredential,
 } from "firebase/auth"
 import { getApps, initializeApp } from "firebase/app"
 import {
-	addDoc,
 	collection,
 	connectFirestoreEmulator,
 	doc,
+	getDoc,
 	getFirestore,
 	serverTimestamp,
 	setDoc,
@@ -58,23 +54,29 @@ export const firebaseGoogleLogin = async () => {
 			// const token = credential.accessToken
 
 			const user = result.user
-			const usersRef = collection(db, "user")
 
-			await setDoc(doc(usersRef, user.uid), {
+			const newUser = getAdditionalUserInfo(result).isNewUser
+			const userDoc = {
 				uid: user.uid,
 				name: user.displayName,
 				email: user.email,
-				userPhoto: user.photoURL,
-				createdAt: now,
 				lastLogin: now,
-			})
+			}
+			const query = newUser ? setDoc : updateDoc
+			if (newUser) {
+				;(userDoc["createdAt"] = now),
+					(userDoc["userPhotoURL"] = user.photoURL)
+			}
+
+			await query(doc(db, "user", user.uid), userDoc)
+			console.log((await getDoc(doc(db, "user", user.uid))).data())
 		})
 		.catch((error) => {
 			console.log(error)
 		})
 }
 
-export const firebaseLogout = async (user: User | storeUserData) => {
+export const firebaseLogout = async (user: storeUserData) => {
 	const auth = getAuth()
 	const db = getFirestore()
 	const now = serverTimestamp()
@@ -89,28 +91,28 @@ export const firebaseLogout = async (user: User | storeUserData) => {
 	}
 }
 
-export const firebaseEmailRegister = async (
-	email: string,
-	password: string
-) => {
-	const auth = getAuth()
-	const db = getFirestore()
-	const now = serverTimestamp()
-	const usersRef = collection(db, "user")
-	await createUserWithEmailAndPassword(auth, email, password)
-		.then(async (userCredential) => {
-			const user = userCredential.user
+// export const firebaseEmailRegister = async (
+// 	email: string,
+// 	password: string
+// ) => {
+// 	const auth = getAuth()
+// 	const db = getFirestore()
+// 	const now = serverTimestamp()
+// 	const usersRef = collection(db, "user")
+// 	await createUserWithEmailAndPassword(auth, email, password)
+// 		.then(async (userCredential) => {
+// 			const user = userCredential.user
 
-			await setDoc(doc(usersRef, user.uid), {
-				uid: user.uid,
-				name: user.displayName,
-				email: user.email,
-				userPhoto: user.photoURL,
-				createdAt: now,
-				lastLogin: now,
-			})
-		})
-		.catch((error) => {
-			console.log(error.message)
-		})
-}
+// 			await setDoc(doc(usersRef, user.uid), {
+// 				uid: user.uid,
+// 				name: user.displayName,
+// 				email: user.email,
+// 				userPhoto: user.photoURL,
+// 				createdAt: now,
+// 				lastLogin: now,
+// 			})
+// 		})
+// 		.catch((error) => {
+// 			console.log(error.message)
+// 		})
+// }

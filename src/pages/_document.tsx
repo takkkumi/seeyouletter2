@@ -15,7 +15,7 @@ export default class Document extends NextDocument {
 						rel="icon"
 						type="image/png"
 						sizes="32x32"
-						href="/favicon/favicon-32x32.png"
+						href="https://firebasestorage.googleapis.com/v0/b/seeyouletter-9f0b4.appspot.com/o/favicon%2Ffavicon-32x32.png?alt=media&token=e101eaae-d517-4d36-b1f2-254614839c98"
 					/>
 					<link
 						rel="icon"
@@ -23,7 +23,7 @@ export default class Document extends NextDocument {
 						sizes="16x16"
 						href="/favicon-16x16.png"
 					/>
-					<link rel="manifest" href="/favicon/webmanifest.json" />
+					<link rel="manifest" crossOrigin="use-credentials"  href="/favicon/web.manifest" />
 					<link
 						rel="mask-icon"
 						href="/favicon/safari-pinned-tab.svg"

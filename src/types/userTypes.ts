@@ -4,9 +4,10 @@ export type storeUserData = {
 	uid: string
 	name: string
 	email: string
-	userIcon: string
+	userPhotoURL: string
 	createdAt: FieldValue
 	lastLogin: FieldValue
+	currentLetter: string | null
 }
 
 export type firebaseUser = {
