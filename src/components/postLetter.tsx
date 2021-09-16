@@ -27,9 +27,13 @@ import UserContext from "@/context/userContext"
 import { postLetter, setCurrentLetter } from "@/actions/postLetterAction"
 import { doc, getFirestore, onSnapshot } from "@firebase/firestore"
 import { format } from "date-fns"
+<<<<<<< HEAD:src/components/postLetter.tsx
 import { LetterLayout } from "./layout/letterLayout"
 import { Letter } from "@/types/letterTypes"
 import Head from "next/head"
+=======
+
+>>>>>>> origin/master:src/components/PostLetter.tsx
 const PostLetter = () => {
 	const auth = useContext(UserContext)
 	const user = auth.storeUser?.data
@@ -54,9 +58,13 @@ const PostLetter = () => {
 
 	const storeUser = useContext(UserContext)?.storeUser
 	const currentLetter = storeUser?.data?.currentLetter
+<<<<<<< HEAD:src/components/postLetter.tsx
 	const [currentValue, setCurrentValue] = useState(currentLetter)
 	useEffect(() => {
 		const db = getFirestore()
+=======
+	const db = getFirestore()
+>>>>>>> origin/master:src/components/PostLetter.tsx
 		const document = doc(
 			db,
 			"user",
@@ -64,13 +72,20 @@ const PostLetter = () => {
 			"letters",
 			`${userUid}_${format(new Date(), "yyyy_MM_dd")}`
 		)
+<<<<<<< HEAD:src/components/postLetter.tsx
 		onSnapshot(document, (doc) => {
 			setTodaysLetter(doc ? (doc.data() as Letter) : null)
+=======
+	useEffect(() => {
+		
+		const unsub=　onSnapshot(document, (doc) => {
+			setTodaysLetter(doc ? doc.data() : null)
+>>>>>>> origin/master:src/components/PostLetter.tsx
 		})
 
 		setRender(false)
 		console.log(todaysLetter)
-		return onSnapshot(document, () => {})
+		return unsub()
 	}, [render])
 	return (
 		<Box>
