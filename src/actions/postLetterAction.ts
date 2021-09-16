@@ -1,5 +1,6 @@
 import {
 	collection,
+	deleteDoc,
 	deleteField,
 	doc,
 	getFirestore,
@@ -12,27 +13,30 @@ import { getDoc, updateDoc } from "firebase/firestore"
 
 const today = new Date()
 const dayRef = format(today, "yyyy_MM_dd")
-export const postLetter = async (userUid: string, text: string) => {
+export const postLetter = async (userUid: string, text?: string) => {
 	const db = getFirestore()
 	const now = serverTimestamp()
 
 	const sendDay = format(addDays(today, 3), "yyyy_MM_dd")
 	try {
-		const userRef = doc(
+		const letterRef = doc(
 			db,
 			"user",
 			userUid,
 			"letters",
 			`${userUid}_${dayRef}`
 		)
-		await setDoc(userRef, {
-			postDay: dayRef,
-			userUid: userUid,
-			text: text,
-			postTime: now,
-			sendDay: sendDay,
-			id: `${userUid}_${dayRef}`,
-		})
+
+		text
+			? await setDoc(letterRef, {
+					postDay: dayRef,
+					userUid: userUid,
+					text: text,
+					postTime: now,
+					sendDay: sendDay,
+					id: `${userUid}_${dayRef}`,
+			  })
+			: deleteDoc(letterRef)
 		console.log(
 			(
 				await getDoc(
