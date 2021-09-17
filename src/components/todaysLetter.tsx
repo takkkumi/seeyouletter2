@@ -1,32 +1,13 @@
 import { Letter } from "@/types/letterTypes"
+import { fittLetterText } from "@/util/fittLetterText"
 import { Box, Divider, Square, Text } from "@chakra-ui/layout"
 import React from "react"
 
 interface Props {
 	letter: Letter
 }
-export const LetterLayout = (prop: Props) => {
-	let texts: string[] = []
-	const brTexts = prop.letter.text.split("\n")
-	const kreeBrTexts = brTexts.map((text) => {
-		let count = 0
-
-		for (let i = 0; i < text.length; i++) {
-			if (text[i].match(/[ -~]/)) {
-				count += 0.6
-			} else {
-				count += 1
-			}
-		}
-
-		return count
-	})
-	brTexts.map((item) => {
-		for (let i = 0; i < item.length / 20; i++) {
-			texts.push(item.substr(i * 20, 20))
-		}
-	})
-
+export const TodaysLetter = (prop: Props) => {
+	const texts = fittLetterText(prop.letter.text, 30, 0.58)
 	console.log(texts)
 	return (
 		<Box
@@ -37,7 +18,7 @@ export const LetterLayout = (prop: Props) => {
 			paddingBottom={7}
 			bg="gray.200">
 			{texts.map((text, index) => (
-				<Box maxW="580px" key={index}>
+				<Box maxW="555px" key={index}>
 					<Text
 						fontSize={"lg"}
 						color={"blackAlpha.800"}

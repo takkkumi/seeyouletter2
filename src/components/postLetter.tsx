@@ -28,7 +28,7 @@ import { postLetter, setCurrentLetter } from "@/actions/postLetterAction"
 import { doc, getFirestore, onSnapshot } from "@firebase/firestore"
 import { format } from "date-fns"
 
-import { LetterLayout } from "./layout/letterLayout"
+import { TodaysLetter } from "./todaysLetter"
 import { Letter } from "@/types/letterTypes"
 import Head from "next/head"
 
@@ -38,12 +38,11 @@ const PostLetter = () => {
 	const userUid = user?.uid
 	const [render, setRender] = useState(false)
 	const [todaysLetter, setTodaysLetter] = useState<Letter | null>(null)
-	const [placeholderLetter, setPlaceholderLetter] = useState<string>(null)
+
 	const {
 		handleSubmit,
 		register,
 		formState: { errors, isSubmitting },
-		reset,
 		getValues,
 		setValue,
 	} = useForm()
@@ -57,26 +56,25 @@ const PostLetter = () => {
 	const storeUser = useContext(UserContext)?.storeUser
 	const currentLetter = storeUser?.data?.currentLetter
 
-	const [currentValue, setCurrentValue] = useState(currentLetter)
-
-	const db = getFirestore()
-
-	const document = doc(
-		db,
-		"user",
-		userUid,
-		"letters",
-		`${userUid}_${format(new Date(), "yyyy_MM_dd")}`
-	)
-
 	useEffect(() => {
-		const unsub = onSnapshot(document, (doc) => {
+		const db = getFirestore()
+
+		const document = doc(
+			db,
+			"user",
+			userUid,
+			"letters",
+			`${userUid}_${format(new Date(), "yyyy_MM_dd")}`
+		)
+
+		onSnapshot(document, (doc) => {
+			console.log(doc.data())
 			setTodaysLetter(doc ? (doc.data() as Letter) : null)
 		})
 
 		setRender(false)
-		console.log(todaysLetter)
-		return unsub()
+
+		return onSnapshot(document, () => {})
 	}, [render])
 	return (
 		<Box>
@@ -93,7 +91,7 @@ const PostLetter = () => {
 						<Text fontSize="md" color={"blackAlpha.500"}>
 							Today's Letter
 						</Text>
-						<LetterLayout letter={todaysLetter} />
+						<TodaysLetter letter={todaysLetter} />
 					</>
 				) : (
 					<Text as="em" color={"red.300"}>
@@ -127,19 +125,22 @@ const PostLetter = () => {
 				blockScrollOnMount={false}
 				isOpen={isOpen}
 				onClose={onClose}
-				size="lg">
+				size="2xl">
 				<ModalOverlay />
 				<ModalContent>
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<ModalHeader>Today's Post</ModalHeader>
 						<ModalCloseButton />
-						<ModalBody>
+						<ModalBody alignItems="flex-start">
 							<FormControl isInvalid={errors.post}>
 								<FormLabel htmlFor="post">{`${auth.storeUser?.data?.name}'sPost`}</FormLabel>
 								<Textarea
-									defaultValue={todaysLetter?.text}
+									resize="vertical"
+									defaultValue={
+										currentLetter || todaysLetter?.text
+									}
 									rows={5}
-									cols={60}
+									width="540px"
 									wrap="hard"
 									id="post"
 									style={{
