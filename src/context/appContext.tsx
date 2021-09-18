@@ -8,7 +8,8 @@ export type Functions = {
 	setStoreUser: Dispatch<any>
 	setIsLogin: Dispatch<any>
 	setIsLoading: Dispatch<any>
+	setRender: Dispatch<any>
 }
 
-const UserContext = createContext({} as firebaseUser & Functions)
-export default UserContext
+const AppContext = createContext({} as firebaseUser & Functions)
+export default AppContext

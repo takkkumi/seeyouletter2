@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form"
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext, useEffect, useRef, useState } from "react"
 import {
 	FormErrorMessage,
 	FormLabel,
@@ -22,8 +22,14 @@ import {
 	VStack,
 	Grid,
 	Flex,
+	AlertDialogOverlay,
+	AlertDialog,
+	AlertDialogContent,
+	AlertDialogHeader,
+	AlertDialogBody,
+	AlertDialogFooter,
 } from "@chakra-ui/react"
-import UserContext from "@/context/userContext"
+import UserContext from "@/context/appContext"
 import { postLetter, setCurrentLetter } from "@/actions/postLetterAction"
 import { doc, getFirestore, onSnapshot } from "@firebase/firestore"
 import { format } from "date-fns"
@@ -35,8 +41,9 @@ import Head from "next/head"
 const PostLetter = () => {
 	const auth = useContext(UserContext)
 	const user = auth.storeUser?.data
+	const setRender = auth.setRender
 	const userUid = user?.uid
-	const [render, setRender] = useState(false)
+
 	const [todaysLetter, setTodaysLetter] = useState<Letter | null>(null)
 
 	const {
@@ -49,13 +56,15 @@ const PostLetter = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure()
 	const onSubmit = (values: any) => {
 		postLetter(userUid, values.post)
+		setCurrentLetter(userUid)
 		setRender(true)
 		onClose()
 	}
-
+	const [deleteLetterOpen, setDeleteLetterOpen] = useState(false)
+	const OnDeleteLetterClose = () => setDeleteLetterOpen(false)
+	const cancelRef = useRef()
 	const storeUser = useContext(UserContext)?.storeUser
 	const currentLetter = storeUser?.data?.currentLetter
-
 	useEffect(() => {
 		const db = getFirestore()
 
@@ -67,15 +76,15 @@ const PostLetter = () => {
 			`${userUid}_${format(new Date(), "yyyy_MM_dd")}`
 		)
 
-		onSnapshot(document, (doc) => {
-			console.log(doc.data())
-			setTodaysLetter(doc ? (doc.data() as Letter) : null)
-		})
+		const unsub = () => {
+			onSnapshot(document, (doc) => {
+				console.log(doc.data())
+				setTodaysLetter(doc ? (doc.data() as Letter) : null)
+			})
+		}
 
-		setRender(false)
-
-		return onSnapshot(document, () => {})
-	}, [render])
+		return unsub()
+	}, [])
 	return (
 		<Box>
 			<Head>
@@ -102,7 +111,14 @@ const PostLetter = () => {
 			<Flex>
 				<Button
 					mr="1"
-					onClick={onOpen}
+					onClick={() => {
+						setRender(true)
+						setValue(
+							"post",
+							todaysLetter?.text || currentLetter || null
+						)
+						onOpen()
+					}}
 					mt={3}
 					colorScheme={"blackAlpha"}>
 					<Image
@@ -116,38 +132,43 @@ const PostLetter = () => {
 						: "Write Today's Letter"}
 				</Button>
 
-				<Button mt={3} colorScheme={"gray"}>
-					Delete
-				</Button>
+				{todaysLetter && (
+					<Button
+						mt={3}
+						colorScheme={"gray"}
+						onClick={() => setDeleteLetterOpen(true)}>
+						Delete
+					</Button>
+				)}
 			</Flex>
 
 			<Modal
 				blockScrollOnMount={false}
 				isOpen={isOpen}
 				onClose={onClose}
-				size="2xl">
+				size="2xl"
+				scrollBehavior="outside"
+				closeOnOverlayClick={false}>
 				<ModalOverlay />
-				<ModalContent>
+				<ModalContent width="580">
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<ModalHeader>Today's Post</ModalHeader>
 						<ModalCloseButton />
-						<ModalBody alignItems="flex-start">
+						<ModalBody alignItems="flex-start" width="570px">
+							{console.log(currentLetter)}
 							<FormControl isInvalid={errors.post}>
 								<FormLabel htmlFor="post">{`${auth.storeUser?.data?.name}'sPost`}</FormLabel>
 								<Textarea
-									resize="vertical"
+									resize="none"
 									defaultValue={
 										currentLetter || todaysLetter?.text
 									}
 									rows={5}
-									width="540px"
-									wrap="hard"
+									overflow="visible"
+									width="520px"
 									id="post"
 									style={{
 										lineHeight: "30px",
-										backgroundImage:
-											"linear-gradient(to right, #000, #000 3px, transparent 3px, transparent 8px)",
-										backgroundRepeat: "repeat-x",
 										background:
 											"linear-gradient(to bottom, #A0AEC0 0.5px, #EDF2F7 1px)",
 										backgroundSize: "110% 30px",
@@ -162,6 +183,11 @@ const PostLetter = () => {
 											value: 400,
 											message: "Max length should be 400",
 										},
+										validate: {
+											maxRow: (v) =>
+												v.split("\n").length <= 15 ||
+												"You can only break lines 15 times.",
+										},
 									})}
 								/>
 								<FormErrorMessage>
@@ -170,7 +196,7 @@ const PostLetter = () => {
 							</FormControl>
 						</ModalBody>
 
-						<ModalFooter>
+						<ModalFooter width="570px">
 							<Button
 								isDisabled={!!errors?.name}
 								colorScheme="teal"
@@ -191,18 +217,68 @@ const PostLetter = () => {
 								}}>
 								save
 							</Button>
+							{currentLetter && (
+								<Button
+									mr={3}
+									colorScheme="gray"
+									onClick={() =>
+										setValue("post", currentLetter)
+									}>
+									savedData
+								</Button>
+							)}
 							<Button
 								variant="solid"
+								mr={3}
 								onClick={() => {
-									setCurrentLetter(storeUser?.data?.uid)
 									setValue("post", "")
 								}}>
 								Clear
+							</Button>
+							<Button
+								bgColor="red.400"
+								color="whiteAlpha.900"
+								variant="solid"
+								onClick={onClose}>
+								Close
 							</Button>
 						</ModalFooter>
 					</form>
 				</ModalContent>
 			</Modal>
+			<AlertDialog
+				isOpen={deleteLetterOpen}
+				leastDestructiveRef={cancelRef}
+				onClose={OnDeleteLetterClose}>
+				<AlertDialogOverlay>
+					<AlertDialogContent>
+						<AlertDialogHeader fontSize="lg" fontWeight="bold">
+							Delete Customer
+						</AlertDialogHeader>
+
+						<AlertDialogBody>
+							Are you sure? You can't undo this action afterwards.
+						</AlertDialogBody>
+
+						<AlertDialogFooter>
+							<Button
+								ref={cancelRef}
+								onClick={OnDeleteLetterClose}>
+								Cancel
+							</Button>
+							<Button
+								colorScheme="red"
+								onClick={() => {
+									postLetter(userUid)
+									OnDeleteLetterClose()
+								}}
+								ml={3}>
+								Delete
+							</Button>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialogOverlay>
+			</AlertDialog>
 		</Box>
 	)
 }

@@ -1,12 +1,12 @@
 import PostLetter from "@/components/postLetter"
-import UserContext from "@/context/userContext"
+import AppContext from "@/context/appContext"
 import { Box, Text } from "@chakra-ui/react"
 import { useContext, useEffect } from "react"
 import BasicLayout from "../components/layout/basicLayout"
-import { idContext } from "../context/tabContext"
+import { TabContext } from "../context/tabContext"
 
 export const HomeContent = () => {
-	const user = useContext(UserContext)
+	const user = useContext(AppContext)
 	const storeUser = user?.storeUser
 	const userName = user?.user?.displayName
 	return storeUser ? (
@@ -20,7 +20,7 @@ export const HomeContent = () => {
 	)
 }
 const HomePage = () => {
-	const { id, setId } = useContext(idContext)
+	const { id, setId } = useContext(TabContext)
 	useEffect(() => {
 		setId(0)
 	}, [id])

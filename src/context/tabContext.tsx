@@ -1,6 +1,6 @@
 import { createContext, Dispatch, SetStateAction } from "react"
-type idContext = {
+type TabContext = {
 	id: number
 	setId: Dispatch<SetStateAction<number>>
 }
-export const idContext = createContext({} as idContext)
+export const TabContext = createContext({} as TabContext)

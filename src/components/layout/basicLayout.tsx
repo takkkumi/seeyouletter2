@@ -5,7 +5,7 @@ import { pages } from "@/types/tabTypes"
 import { useContext } from "react"
 import { HomeContent } from "@/pages"
 import { AboutContent } from "@/pages/about"
-import { idContext } from "@/context/tabContext"
+import { TabContext } from "@/context/tabContext"
 const BasicLayout: React.FC = () => {
 	const tabPages: pages = [
 		{
@@ -21,7 +21,7 @@ const BasicLayout: React.FC = () => {
 			label: "About",
 		},
 	]
-	const { id } = useContext(idContext)
+	const { id } = useContext(TabContext)
 	return (
 		<>
 			<Head>

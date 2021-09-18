@@ -5,8 +5,8 @@ import { doc, getDoc, getFirestore } from "firebase/firestore"
 import { getAuth, User } from "firebase/auth"
 
 import { useState, useEffect } from "react"
-import UserContext from "../context/userContext"
-import { idContext } from "@/context/tabContext"
+import AppContext from "../context/appContext"
+import { TabContext } from "@/context/tabContext"
 
 export const MyApp = ({ Component, pageProps }) => {
 	const [user, setUser] = useState(null)
@@ -14,6 +14,7 @@ export const MyApp = ({ Component, pageProps }) => {
 	const [isLogin, setIsLogin] = useState(false)
 	const [isLoading, setIsLoading] = useState(false)
 	const [id, setId] = useState(0)
+	const [render, setRender] = useState(false)
 	useEffect(() => {
 		const isLocal =
 			typeof window !== "undefined"
@@ -47,13 +48,14 @@ export const MyApp = ({ Component, pageProps }) => {
 				setStoreUser(null)
 			}
 		})
+		setRender(false)
 		console.log("render")
 		return () => {
 			unsbscribe()
 		}
-	}, [isLogin])
+	}, [isLogin, render])
 	return (
-		<UserContext.Provider
+		<AppContext.Provider
 			value={{
 				user,
 				isLogin,
@@ -63,8 +65,9 @@ export const MyApp = ({ Component, pageProps }) => {
 				setIsLogin,
 				setStoreUser,
 				setIsLoading,
+				setRender,
 			}}>
-			<idContext.Provider value={{ id, setId }}>
+			<TabContext.Provider value={{ id, setId }}>
 				<ChakraProvider resetCSS theme={theme}>
 					<ColorModeProvider
 						options={{
@@ -73,8 +76,8 @@ export const MyApp = ({ Component, pageProps }) => {
 						<Component {...pageProps} />
 					</ColorModeProvider>
 				</ChakraProvider>
-			</idContext.Provider>
-		</UserContext.Provider>
+			</TabContext.Provider>
+		</AppContext.Provider>
 	)
 }
 

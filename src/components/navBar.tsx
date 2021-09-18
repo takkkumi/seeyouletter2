@@ -18,13 +18,13 @@ import { HamburgerIcon } from "@chakra-ui/icons"
 
 import { pages } from "@/types/tabTypes"
 import React, { useContext } from "react"
-import UserContext from "@/context/userContext"
+import AppContext from "@/context/appContext"
 import { firebaseGoogleLogin, firebaseLogout } from "@/actions/firebase_client"
 
 const NavBar: React.FC<{ tabs: pages; id: number }> = ({ tabs, id }) => {
 	const router = useRouter()
-	const auth = useContext(UserContext)
-	const { isOpen, onOpen, onClose } = useDisclosure()
+	const auth = useContext(AppContext)
+	// const { isOpen, onOpen, onClose } = useDisclosure()
 	const user = auth?.storeUser?.data ?? null
 	return (
 		<Tabs

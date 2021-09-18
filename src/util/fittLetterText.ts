@@ -1,7 +1,8 @@
 export const fittLetterText = (
 	text: string,
 	col: number,
-	lowerCaseValue: number
+	lowerCaseValue: number,
+	numberValue: number
 ) => {
 	const texts = text.split("\n")
 	let resultTexts = []
@@ -16,7 +17,11 @@ export const fittLetterText = (
 				count = 0
 			}
 			if (text[i].match(/[ -~]/)) {
-				count += lowerCaseValue
+				if (text[i].match(/\d/)) {
+					count += numberValue
+				} else {
+					count += lowerCaseValue
+				}
 			} else {
 				count += 1
 			}
